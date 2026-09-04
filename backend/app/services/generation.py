@@ -1,10 +1,25 @@
-from ollama import chat
+from ollama import Client
+
+from app.core.config import settings
 
 
-MODEL_NAME = "qwen3:1.7b"
+# Ollama client
+ollama_client = None
 
 
-def generate_answer(question: str, retrieved_chunks: list):
+def initialize_llm():
+    """Initialize the Ollama client once during application startup."""
+    global ollama_client
+
+    ollama_client = Client(
+        host=settings.ollama_host
+    )
+
+
+def generate_answer(
+    question: str,
+    retrieved_chunks: list
+):
     """
     Generate a grounded answer using retrieved document chunks.
     """
@@ -33,16 +48,21 @@ Do not invent facts.
 Always mention the relevant source page(s).
 
 Context:
+
 {context}
 
 Question:
+
 {question}
 
 Answer:
 """
 
-    response = chat(
-        model=MODEL_NAME,
+    if ollama_client is None:
+        initialize_llm()
+
+    response = ollama_client.chat(
+        model=settings.ollama_model,
         messages=[
             {
                 "role": "user",
