@@ -1,0 +1,23 @@
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Large local data
+data/cano.pdf
+data/vector_store/
+
+# OS files
+.DS_Store
+Thumbs.db

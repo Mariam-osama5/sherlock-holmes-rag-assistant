@@ -1,0 +1,11 @@
+{
+    "chunk_size": 1000,
+    "chunk_overlap": 150,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "vector_store": "ChromaDB",
+    "collection_name": "sherlock_holmes",
+    "retrieval_strategy": "hybrid",
+    "semantic_weight": 0.4,
+    "keyword_weight": 0.6,
+    "top_k": 5
+}
