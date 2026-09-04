@@ -128,10 +128,10 @@ cd sherlock-holmes-rag-assistant
 python -m venv .venv
 ```
 
-Windows:
+**Windows PowerShell:**
 
 ```powershell
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 ### 3. Install dependencies
@@ -141,7 +141,25 @@ pip install -r backend/requirements.txt
 pip install -r frontend/requirements.txt
 ```
 
-### 4. Install and run Ollama
+### 4. Prepare the Vector Store
+
+The PDF and local ChromaDB vector store are not included in the GitHub repository because they are large files.
+
+To prepare the vector store:
+
+1. Place `cano.pdf` inside the `data/` directory.
+2. Open `notebooks/rag_pipeline.ipynb`.
+3. Select the project virtual environment as the Jupyter kernel.
+4. Run the notebook from top to bottom.
+5. The notebook extracts the PDF text, creates chunks, generates embeddings, and persists the ChromaDB vector store in:
+
+```text
+data/vector_store/
+```
+
+After this step, the FastAPI backend can load the existing vector store directly without rebuilding it for every request.
+
+### 5. Install and run Ollama
 
 Pull the required model:
 
@@ -149,7 +167,9 @@ Pull the required model:
 ollama pull qwen3:1.7b
 ```
 
-### 5. Configure environment variables
+Make sure Ollama is running before starting the backend.
+
+### 6. Configure environment variables
 
 Create:
 
@@ -160,21 +180,26 @@ frontend/.env
 
 using the provided `.env.example` files.
 
-Backend:
+**Backend:**
 
 ```env
 OLLAMA_MODEL=qwen3:1.7b
 OLLAMA_HOST=http://127.0.0.1:11434
+
 EMBEDDING_MODEL=all-MiniLM-L6-v2
+
 COLLECTION_NAME=sherlock_holmes
+
 TOP_K=5
 CANDIDATE_K=20
+
 SEMANTIC_WEIGHT=0.4
 KEYWORD_WEIGHT=0.6
+
 FRONTEND_ORIGIN=http://localhost:8501
 ```
 
-Frontend:
+**Frontend:**
 
 ```env
 API_BASE_URL=http://127.0.0.1:8000
@@ -282,7 +307,7 @@ The retrieval pipeline was evaluated using different questions and retrieval str
 * Semantic retrieval
 * TF-IDF retrieval
 * Short-chunk filtering
-* RRF
+* Reciprocal Rank Fusion (RRF)
 * Hybrid retrieval
 
 The final configuration uses:
