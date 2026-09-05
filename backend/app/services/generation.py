@@ -24,6 +24,7 @@ def generate_answer(
     Generate a grounded answer using retrieved document chunks.
     """
 
+    # Build context from retrieved chunks
     context_parts = []
 
     for i, chunk in enumerate(retrieved_chunks, start=1):
@@ -34,17 +35,21 @@ def generate_answer(
 
     context = "\n\n".join(context_parts)
 
-    prompt = f"""You are a question-answering assistant for
+    # Prompt for the LLM
+    prompt = f"""
+You are a question-answering assistant for
 The Complete Sherlock Holmes by Arthur Conan Doyle.
 
 Answer the user's question using ONLY the provided context.
 
 If the answer cannot be determined from the context, say:
+
 "I could not find enough information in the provided context."
 
 Do not use outside knowledge.
 Do not invent facts.
 
+Give a concise answer.
 Always mention the relevant source page(s).
 
 Context:
@@ -58,9 +63,11 @@ Question:
 Answer:
 """
 
+    # Make sure Ollama is initialized
     if ollama_client is None:
         initialize_llm()
 
+    # Generate answer
     response = ollama_client.chat(
         model=settings.ollama_model,
         messages=[
@@ -68,7 +75,11 @@ Answer:
                 "role": "user",
                 "content": prompt
             }
-        ]
+        ],
+        think=False,
+        options={
+            "num_predict": 200
+        }
     )
 
     return response["message"]["content"]

@@ -21,20 +21,20 @@ The system retrieves relevant passages from the book and uses a local LLM to gen
 
 ```text
 PDF
- ↓
+  ↓
 Text Extraction
- ↓
+  ↓
 Chunking
- ↓
+  ↓
 Embeddings
- ↓
+  ↓
 ChromaDB
- ↓
+  ↓
 Hybrid Retrieval
 (Semantic + TF-IDF)
- ↓
+  ↓
 Qwen 3 1.7B
- ↓
+  ↓
 Answer + Sources
 ```
 
@@ -98,10 +98,12 @@ RAG_Assistant_Project/
 │   │   │   ├── retrieval.py
 │   │   │   └── generation.py
 │   │   └── utils/logging_config.py
+│   │
 │   ├── tests/test_query.py
 │   ├── requirements.txt
 │   ├── .env.example
-│   └── Dockerfile
+│   ├── Dockerfile
+│   └── .dockerignore
 │
 ├── frontend/
 │   ├── app.py
@@ -180,30 +182,27 @@ frontend/.env
 
 using the provided `.env.example` files.
 
-**Backend:**
+#### Backend — `backend/.env`
 
-```env
-OLLAMA_MODEL=qwen3:1.7b
-OLLAMA_HOST=http://127.0.0.1:11434
+| Variable          | Description                           | Example                  |
+| ----------------- | ------------------------------------- | ------------------------ |
+| `OLLAMA_MODEL`    | Local Ollama LLM model                | `qwen3:1.7b`             |
+| `OLLAMA_HOST`     | Ollama server address                 | `http://127.0.0.1:11434` |
+| `EMBEDDING_MODEL` | Sentence Transformers embedding model | `all-MiniLM-L6-v2`       |
+| `COLLECTION_NAME` | ChromaDB collection name              | `sherlock_holmes`        |
+| `TOP_K`           | Number of final retrieved chunks      | `5`                      |
+| `CANDIDATE_K`     | Number of retrieval candidates        | `20`                     |
+| `SEMANTIC_WEIGHT` | Weight of semantic retrieval          | `0.4`                    |
+| `KEYWORD_WEIGHT`  | Weight of TF-IDF keyword retrieval    | `0.6`                    |
+| `FRONTEND_ORIGIN` | Allowed frontend origin for CORS      | `http://localhost:8501`  |
 
-EMBEDDING_MODEL=all-MiniLM-L6-v2
+#### Frontend — `frontend/.env`
 
-COLLECTION_NAME=sherlock_holmes
+| Variable       | Description         | Example                 |
+| -------------- | ------------------- | ----------------------- |
+| `API_BASE_URL` | FastAPI backend URL | `http://127.0.0.1:8000` |
 
-TOP_K=5
-CANDIDATE_K=20
-
-SEMANTIC_WEIGHT=0.4
-KEYWORD_WEIGHT=0.6
-
-FRONTEND_ORIGIN=http://localhost:8501
-```
-
-**Frontend:**
-
-```env
-API_BASE_URL=http://127.0.0.1:8000
-```
+> **Note:** `.env` files are local configuration files and are excluded from Git using `.gitignore`. Do not commit them to GitHub.
 
 ## ▶️ Run the Application
 
@@ -213,6 +212,7 @@ From the project root:
 
 ```powershell
 cd backend
+
 uvicorn app.main:app --reload
 ```
 
@@ -252,6 +252,8 @@ http://localhost:8501
 
 ### `GET /health`
 
+Response:
+
 ```json
 {
   "status": "healthy"
@@ -280,6 +282,14 @@ Response:
 }
 ```
 
+### cURL Example
+
+```bash
+curl -X POST "http://127.0.0.1:8000/query" \
+  -H "Content-Type: application/json" \
+  -d "{\"question\":\"Who is Sherlock Holmes?\"}"
+```
+
 ## 🧪 Testing
 
 The backend includes tests for:
@@ -302,13 +312,15 @@ Current result:
 
 ## 📊 Evaluation
 
-The retrieval pipeline was evaluated using different questions and retrieval strategies, including:
+The RAG pipeline was evaluated using different retrieval strategies and questions, including:
 
 * Semantic retrieval
 * TF-IDF retrieval
 * Short-chunk filtering
 * Reciprocal Rank Fusion (RRF)
 * Hybrid retrieval
+
+The notebook contains **10 evaluation questions** covering retrieval relevance, grounding, and answer correctness.
 
 The final configuration uses:
 
@@ -347,4 +359,5 @@ The evaluation focused on retrieval relevance and whether generated answers were
 AI Engineer Trainee | Machine Learning & Generative AI
 
 GitHub:
+
 https://github.com/Mariam-osama5
