@@ -346,11 +346,14 @@ The evaluation focused on retrieval relevance and whether generated answers were
 
 ### Streamlit Frontend
 
-*Add screenshot here.*
+![Streamlit Frontend](screenshots/streamlit.png)
 
 ### FastAPI Swagger
 
-*Add screenshot here.*
+![FastAPI Swagger - Request](screenshots/swagger1.png)
+
+![FastAPI Swagger - Response](screenshots/swagger2.png)
+
 
 ## 👩‍💻 Author
 
