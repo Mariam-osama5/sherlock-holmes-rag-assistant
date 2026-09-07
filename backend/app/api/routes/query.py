@@ -22,8 +22,8 @@ def query_rag(request: QueryRequest):
     )
 
     sources = list(dict.fromkeys(
-    f"Page {chunk['page_number']}"
-    for chunk in retrieved_chunks
+        f"Page {chunk['page_number']}"
+        for chunk in retrieved_chunks
     ))
 
     return QueryResponse(

@@ -4,8 +4,7 @@
     "embedding_model": "all-MiniLM-L6-v2",
     "vector_store": "ChromaDB",
     "collection_name": "sherlock_holmes",
-    "retrieval_strategy": "hybrid",
-    "semantic_weight": 0.4,
-    "keyword_weight": 0.6,
-    "top_k": 5
+    "retrieval_strategy": "hybrid_filtered_rrf",
+    "top_k": 5,
+    "candidate_k": 20
 }
